@@ -7,6 +7,12 @@ const professionSchema = new mongoose.Schema({
     unique: true,
     trim: true,
   },
+  professionals: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Professional",
+    },
+  ],
 });
 
 const Profession = mongoose.model("Profession", professionSchema);

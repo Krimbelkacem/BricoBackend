@@ -1,6 +1,7 @@
 const { User, Professional } = require("../models/user");
 const { generateToken } = require("../config/token");
-const addusers = async (req, res) => {
+const Profession = require("../models/profession");
+/*const addusers = async (req, res) => {
   try {
     const user = new User(req.body);
     // Check if a file was uploaded
@@ -20,9 +21,67 @@ const addusers = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+*/
+
+const addusers = async (req, res) => {
+  try {
+    // Check if the request body contains the "profession" field
+    if (req.body.profession) {
+      // If the "profession" field is present, create and save a Professional user
+      const professional = new Professional(req.body);
+      // Check if a file was uploaded
+      if (req.file) {
+        professional.picture = req.file.filename; // Assign the uploaded file's filename to the user's picture field
+      }
+
+      // Generate token for the newly created professional
+      const token = generateToken(professional._id);
+
+      // Save the token in the professional document and save the document
+      professional.token = token;
+      await professional.save();
+      console.log("prestataire updated");
+      const updatedProfession = await Profession.findOneAndUpdate(
+        { _id: req.body.profession },
+        { $push: { professionals: professional._id } },
+        { new: true }
+      );
+
+      if (!updatedProfession) {
+        console.log("profession updated");
+        return res.status(404).json({ error: "Profession not found" });
+      }
+
+      res.status(201).json({ professional, token });
+    } else {
+      // If the "profession" field is not present, create and save a regular User
+      const user = new User(req.body);
+
+      // Check if a file was uploaded
+      if (req.file) {
+        user.picture = req.file.filename; // Assign the uploaded file's filename to the user's picture field
+      }
+
+      // Generate token for the newly created user
+      const token = generateToken(user._id);
+
+      // Save the token in the user document and save the document
+      user.token = token;
+      await user.save();
+
+      res.status(201).json({ user, token });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 const profilusers = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id)
+      .populate("requestedProjects")
+      .populate("managedProjects")
+      .exec();
     if (!user) throw new Error("User not found");
     res.json(user);
   } catch (error) {

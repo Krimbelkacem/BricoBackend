@@ -13,7 +13,21 @@ const {
   deleteprofessionals,
   signIn,
 } = require("../controllers/userController");
-const { addprofession } = require("../controllers/professionController");
+const {
+  addprofession,
+  getAllProfessions,
+  deleteProfession,
+} = require("../controllers/professionController");
+const {
+  requestproject,
+  accepteProject,
+  canceleProject,
+  rejectProject,
+  addMessage,
+  getMessages,
+  getUserDiscussions,
+  getProfessionalDiscussions,
+} = require("../controllers/projectController");
 const router = express();
 
 router.post("/addusers", upload.single("picture"), addusers);
@@ -50,5 +64,21 @@ router.post("/signIn", signIn);
 
 ///////////////////////////////  proffession///////////////////////////////////////////
 
-router.post("/professions", addprofession);
+router.post("/addprofessions", addprofession);
+router.get("/getAllProfessions", getAllProfessions);
+router.delete("/deleteprofessions/:id", deleteProfession);
+
+/////////////////////////////prjects//////////////////
+router.post("/requestproject", requestproject);
+router.post("/accepteProject", accepteProject);
+router.post("/canceleProject", canceleProject);
+router.post("/rejectProject", rejectProject);
+router.post("/addMessage", addMessage);
+router.get("/getMessages/:discussionId", getMessages);
+router.get("/getUserDiscussions/:userId", getUserDiscussions);
+router.get(
+  "/getProfessionalDiscussions/:professionalId",
+  getProfessionalDiscussions
+);
+
 module.exports = router;

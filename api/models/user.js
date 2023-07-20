@@ -39,6 +39,16 @@ const userSchema = new Schema(
     token: {
       type: String,
     },
+    address: {
+      type: String,
+    },
+    // Add a reference to requested projects
+    requestedProjects: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -69,6 +79,13 @@ const professionalSchema = new mongoose.Schema({
     ref: "Profession",
   },
   experience: Number,
+  // Add a reference to managed projects
+  managedProjects: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+    },
+  ],
   // Other professional-specific fields
 });
 
