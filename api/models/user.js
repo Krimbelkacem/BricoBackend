@@ -86,6 +86,12 @@ const professionalSchema = new mongoose.Schema({
       ref: "Project",
     },
   ],
+  rating: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 5,
+  },
   // Other professional-specific fields
 });
 

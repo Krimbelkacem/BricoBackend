@@ -207,7 +207,63 @@ const signIn = async (req, res) => {
   }
 };
 
+const addRatings = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const { rating } = req.body;
+
+    // Validate rating value
+    if (rating < 0 || rating > 5) {
+      return res.status(400).json({
+        message: "Invalid rating value. It should be between 0 and 5.",
+      });
+    }
+
+    // Find the professional by ID
+    const professional = await Professional.findByIdAndUpdate(
+      id,
+      { rating },
+      { new: true }
+    );
+
+    if (!professional) {
+      return res.status(404).json({ message: "Professional not found." });
+    }
+
+    return res.status(200).json({
+      message: "Rating added successfully.",
+      rating: professional.rating,
+    });
+  } catch (error) {
+    console.error("Error adding rating:", error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+const deleteRatings = async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    // Find the professional by ID
+    const professional = await Professional.findByIdAndUpdate(
+      id,
+      { $unset: { rating: 1 } },
+      { new: true }
+    );
+
+    if (!professional) {
+      return res.status(404).json({ message: "Professional not found." });
+    }
+
+    return res.status(200).json({ message: "Rating deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting rating:", error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
 module.exports = {
+  addRatings,
+  deleteRatings,
   addusers,
   allusers,
   profilusers,

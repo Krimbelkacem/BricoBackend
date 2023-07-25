@@ -1,6 +1,8 @@
 const express = require("express");
 const upload = require("../config/multer");
 const {
+  addRatings,
+  deleteRatings,
   addusers,
   allusers,
   profilusers,
@@ -67,6 +69,8 @@ router.post("/signIn", signIn);
 router.post("/addprofessions", addprofession);
 router.get("/getAllProfessions", getAllProfessions);
 router.delete("/deleteprofessions/:id", deleteProfession);
+router.put("/addRatings", addRatings);
+router.put("/deleteRatings", deleteRatings);
 
 /////////////////////////////prjects//////////////////
 router.post("/requestproject", requestproject);
