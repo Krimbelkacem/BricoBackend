@@ -77,7 +77,7 @@ router.post("/requestproject", requestproject);
 router.post("/accepteProject", accepteProject);
 router.post("/canceleProject", canceleProject);
 router.post("/rejectProject", rejectProject);
-router.post("/addMessage", addMessage);
+router.post("/addMessage", upload.single("photo"), addMessage);
 router.get("/getMessages/:discussionId", getMessages);
 router.get("/getUserDiscussions/:userId", getUserDiscussions);
 router.get(

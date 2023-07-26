@@ -27,6 +27,10 @@ const discussionSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
+      photoUrl: {
+        type: String,
+        default: null,
+      },
       timestamp: {
         type: Date,
         default: Date.now,

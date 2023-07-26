@@ -119,10 +119,9 @@ const rejectProject = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-
 const addMessage = async (req, res) => {
   const discussionId = req.query.discussionId;
-  const { sender, content } = req.body;
+  const { sender, text } = req.body;
 
   try {
     const discussion = await Discussion.findById(discussionId);
@@ -130,9 +129,18 @@ const addMessage = async (req, res) => {
       return res.status(404).json({ error: "Discussion not found" });
     }
 
+    let photoUrl = null;
+    if (req.file) {
+      // Assuming multer is set up to store uploaded files in a "uploads" folder.
+      photoUrl = `${req.file.filename}`;
+    }
+
     const newMessage = {
       sender,
-      content,
+      content: {
+        text,
+        photoUrl,
+      },
       timestamp: Date.now(),
     };
 
@@ -144,6 +152,7 @@ const addMessage = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 const getMessages = async (req, res) => {
   const { discussionId } = req.params;
 
