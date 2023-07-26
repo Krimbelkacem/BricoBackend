@@ -209,8 +209,10 @@ const signIn = async (req, res) => {
 
 const addRatings = async (req, res) => {
   try {
-    const { id } = req.query;
+    const idprofessional = req.query.id;
+    const iduser = req.query.iduser;
     const { rating } = req.body;
+    console.log(idprofessional, iduser, rating);
 
     // Validate rating value
     if (rating < 0 || rating > 5) {
@@ -220,25 +222,26 @@ const addRatings = async (req, res) => {
     }
 
     // Find the professional by ID
-    const professional = await Professional.findByIdAndUpdate(
-      id,
-      { rating },
-      { new: true }
-    );
+    const professional = await Professional.findById(idprofessional);
 
     if (!professional) {
       return res.status(404).json({ message: "Professional not found." });
     }
 
+    // Add the new rating to the ratings array
+    professional.ratings.push({ user: iduser, value: rating });
+    await professional.save();
+
     return res.status(200).json({
       message: "Rating added successfully.",
-      rating: professional.rating,
+      rating: professional.ratings,
     });
   } catch (error) {
     console.error("Error adding rating:", error);
     return res.status(500).json({ message: "Internal server error." });
   }
 };
+
 const deleteRatings = async (req, res) => {
   try {
     const { id } = req.query;

@@ -86,13 +86,20 @@ const professionalSchema = new mongoose.Schema({
       ref: "Project",
     },
   ],
-  rating: {
-    type: Number,
-    default: 0,
-    min: 0,
-    max: 5,
-  },
-  // Other professional-specific fields
+  ratings: [
+    {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      value: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 5,
+      },
+    },
+  ],
 });
 
 const Professional = User.discriminator("Professional", professionalSchema);
